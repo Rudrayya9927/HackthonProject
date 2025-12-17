@@ -1,7 +1,7 @@
-This workspace contains a local anomaly detection demo using Z-score method on CSV data.
+This workspace contains a local anomaly detection demo using Z-score method on CSV data with visualization.
 
 Files:
-- `smoke_anomalydetector.py`: Loads CSV data and detects anomalies using rolling Z-score.
+- `smoke_anomalydetector.py`: Loads CSV data, detects anomalies, and plots the results.
 - `sample_data_5_3000.csv`: Sample time series data.
 
 How to run:
@@ -10,8 +10,8 @@ How to run:
 python smoke_anomalydetector.py
 ```
 
-It uses local computation, no Azure API required.
+It saves a plot as `anomalies_plot.png`.
 
 Notes:
 - Python 3.12.10 installed.
-- pandas and numpy installed.
+- pandas, numpy, matplotlib installed.
