@@ -1,8 +1,8 @@
-This workspace contains a multivariate anomaly detection demo using `azure.ai.anomalydetector`.
+This workspace contains a univariate anomaly detection demo using `azure.ai.anomalydetector` with local CSV data.
 
 Files:
-- `smoke_anomalydetector.py`: Trains a multivariate model on local CSV data and detects anomalies.
-- `sample_data_5_3000.csv`: Sample multivariate time series data.
+- `smoke_anomalydetector.py`: Loads CSV data and detects anomalies in one series.
+- `sample_data_5_3000.csv`: Sample multivariate time series data (uses series_0 for demo).
 
 How to run:
 
@@ -14,8 +14,6 @@ How to run:
    ```powershell
    python smoke_anomalydetector.py
    ```
-
-Note: Training may take several minutes. Ensure your Azure resource supports multivariate anomaly detection.
 
 Notes:
 - Python 3.12.10 and `py` launcher installed via `winget`.
