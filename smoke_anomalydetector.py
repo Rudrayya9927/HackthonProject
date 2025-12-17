@@ -22,13 +22,13 @@ print('Python executable:', sys.executable)
 
 # Anomaly detection demo
 print('\n--- Anomaly Detection Demo ---')
-endpoint = os.getenv('ANOMALY_DETECTOR_ENDPOINT')
-key = os.getenv('ANOMALY_DETECTOR_KEY')
+endpoint = os.environ.get('ANOMALY_DETECTOR_ENDPOINT')
+key = os.environ.get('ANOMALY_DETECTOR_KEY')
 
 if not endpoint or not key:
-    print('Set ANOMALY_DETECTOR_ENDPOINT and ANOMALY_DETECTOR_KEY environment variables.')
-    print('Example: $env:ANOMALY_DETECTOR_ENDPOINT="https://your-resource.cognitiveservices.azure.com/"')
-    print('$env:ANOMALY_DETECTOR_KEY="your-key"')
+    print('Please set the environment variables:')
+    print('$env:ANOMALY_DETECTOR_ENDPOINT = "https://your-resource.cognitiveservices.azure.com/"')
+    print('$env:ANOMALY_DETECTOR_KEY = "your-key"')
     sys.exit(1)
 
 client = AnomalyDetectorClient(endpoint, AzureKeyCredential(key))
@@ -56,6 +56,47 @@ except Exception as e:
     print('Error detecting anomalies:', e)
 
 sys.exit(0)
+
+ad_client = AnomalyDetectorClient(ANOMALY_DETECTOR_ENDPOINT, AzureKeyCredential(SUBSCRIPTION_KEY))
+
+time_format = "%Y-%m-%dT%H:%M:%SZ"
+blob_url = "Path-to-sample-file-in-your-storage-account"  # example path: https://docstest001.blob.core.windows.net/test/sample_data_5_3000.csv
+
+train_body = ModelInfo(
+    data_source=blob_url,
+    start_time=datetime.strptime("2021-01-02T00:00:00Z", time_format),
+    end_time=datetime.strptime("2021-01-02T05:00:00Z", time_format),
+    data_schema="OneTable",
+    display_name="sample",
+    sliding_window=200,
+    align_policy=AlignPolicy(
+        align_mode=AlignMode.OUTER,
+        fill_n_a_method=FillNAMethod.LINEAR,
+        padding_value=0,
+    ),
+)
+
+batch_inference_body = MultivariateBatchDetectionOptions(
+       data_source=blob_url,
+       top_contributor_count=10,
+       start_time=datetime.strptime("2021-01-02T00:00:00Z", time_format),
+       end_time=datetime.strptime("2021-01-02T05:00:00Z", time_format),
+   )
+
+
+print("Training new model...(it may take a few minutes)")
+model = ad_client.train_multivariate_model(train_body)
+model_id = model.model_id
+print("Training model id is {}".format(model_id))
+
+## Wait until the model is ready. It usually takes several minutes
+model_status = None
+model = None
+
+while model_status != ModelStatus.READY and model_status != ModelStatus.FAILED:
+    model = ad_client.get_multivariate_model(model_id)
+    print(model)
+    model_status = model.model_info.status
     print("Model is {}".format(model_status))
     time.sleep(30)
 if model_status == ModelStatus.READY:
