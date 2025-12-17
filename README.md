@@ -1,25 +1,22 @@
-This workspace contains a smoke test and demo for `azure.ai.anomalydetector`.
+This workspace contains a multivariate anomaly detection demo using `azure.ai.anomalydetector`.
 
 Files:
-- `smoke_anomalydetector.py`: Imports the package, shows version, and runs a demo anomaly detection on sample data.
+- `smoke_anomalydetector.py`: Trains a multivariate model on local CSV data and detects anomalies.
+- `sample_data_5_3000.csv`: Sample multivariate time series data.
 
 How to run:
 
-1. Set up Azure Anomaly Detector:
-   - Create an Azure Cognitive Services resource.
-   - Get the endpoint and key from the Azure portal.
+1. Replace placeholders in `smoke_anomalydetector.py`:
+   - `SUBSCRIPTION_KEY = "YOUR_API_KEY"`
+   - `ANOMALY_DETECTOR_ENDPOINT = "YOUR_ENDPOINT"`
 
-2. Set environment variables:
+2. Run:
    ```powershell
-   $env:ANOMALY_DETECTOR_ENDPOINT="https://your-resource.cognitiveservices.azure.com/"
-   $env:ANOMALY_DETECTOR_KEY="your-key"
+   python smoke_anomalydetector.py
    ```
 
-3. Run the script:
-   ```powershell
-   py -3 .\smoke_anomalydetector.py
-   ```
+Note: Training may take several minutes. Ensure your Azure resource supports multivariate anomaly detection.
 
 Notes:
 - Python 3.12.10 and `py` launcher installed via `winget`.
-- `pip` upgraded to 25.3 and `azure.ai.anomalydetector` installed (v3.0.0b6).
+- `pip` upgraded to 25.3, `azure.ai.anomalydetector` and `pandas` installed.
