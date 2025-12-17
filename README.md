@@ -1,20 +1,17 @@
-This workspace contains a univariate anomaly detection demo using `azure.ai.anomalydetector` with local CSV data.
+This workspace contains a local anomaly detection demo using Z-score method on CSV data.
 
 Files:
-- `smoke_anomalydetector.py`: Loads CSV data and detects anomalies in one series.
-- `sample_data_5_3000.csv`: Sample multivariate time series data (uses series_0 for demo).
+- `smoke_anomalydetector.py`: Loads CSV data and detects anomalies using rolling Z-score.
+- `sample_data_5_3000.csv`: Sample time series data.
 
 How to run:
 
-1. Replace placeholders in `smoke_anomalydetector.py`:
-   - `SUBSCRIPTION_KEY = "YOUR_API_KEY"`
-   - `ANOMALY_DETECTOR_ENDPOINT = "YOUR_ENDPOINT"`
+```powershell
+python smoke_anomalydetector.py
+```
 
-2. Run:
-   ```powershell
-   python smoke_anomalydetector.py
-   ```
+It uses local computation, no Azure API required.
 
 Notes:
-- Python 3.12.10 and `py` launcher installed via `winget`.
-- `pip` upgraded to 25.3, `azure.ai.anomalydetector` and `pandas` installed.
+- Python 3.12.10 installed.
+- pandas and numpy installed.
