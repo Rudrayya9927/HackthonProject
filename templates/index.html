@@ -1,0 +1,68 @@
+
+<!-- templates/index.html -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Anomaly Dashboard (Local)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1"></script>
+</head>
+<body>
+  <header class="app-header">
+    <h1>Retain • Anomaly Detection</h1>
+    <div class="actions">
+      <button id="refreshBtn" class="btn">Refresh</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- KPI row -->
+    <section class="kpis">
+      <div class="kpi">
+        <div class="kpi-label">Total Points</div>
+        <div class="kpi-value" id="kpiTotal">—</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Anomalies</div>
+        <div class="kpi-value kpi-warn" id="kpiAnoms">—</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Threshold (Z)</div>
+        <div class="kpi-value" id="kpiThresh">3.0</div>
+      </div>
+    </section>
+
+    <!-- Chart card -->
+    <section class="card">
+      <h2>series_0 — Time Series with Anomalies</h2>
+      <canvas id="tsChart" height="120"></canvas>
+    </section>
+
+    <!-- Table card -->
+    <section class="card">
+      <h2>Detected Anomalies</h2>
+      <table class="table" id="anomTable">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Timestamp</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <small>Local mock dashboard • No Azure required • Z-score detector</small>
+  </footer>
+
+  <!-- App JS -->
+  {{ url_for(</script>
+</body>
+</html>
