@@ -4,7 +4,7 @@ import sys
 import os
 from azure.ai.anomalydetector import AnomalyDetectorClient
 from azure.core.credentials import AzureKeyCredential
-from azure.ai.anomalydetector.models import Point, TimeSeriesPoint, DetectRequest
+from azure.ai.anomalydetector.models import TimeSeriesPoint, DetectRequest
 
 # Smoke test for azure.ai.anomalydetector
 try:
@@ -19,13 +19,6 @@ except Exception as e:
 
 # Extra: show interpreter path for clarity
 print('Python executable:', sys.executable)
-print('Launcher (py) check:')
-try:
-    import subprocess
-    out = subprocess.run(['py','-3','-c','import sys; print(sys.executable)'], capture_output=True, text=True)
-    print(out.stdout.strip())
-except Exception as e:
-    print('py launcher check failed:', e)
 
 # Anomaly detection demo
 print('\n--- Anomaly Detection Demo ---')
@@ -40,7 +33,7 @@ if not endpoint or not key:
 
 client = AnomalyDetectorClient(endpoint, AzureKeyCredential(key))
 
-# Sample time series data (replace with real data)
+# Sample time series data
 series = [
     TimeSeriesPoint(timestamp="2021-01-01T00:00:00Z", value=5.0),
     TimeSeriesPoint(timestamp="2021-01-02T00:00:00Z", value=5.1),
@@ -55,10 +48,53 @@ request = DetectRequest(series=series, granularity="daily")
 try:
     response = client.detect_entire_series(request)
     print('Anomaly detection results:')
-    for i, point in enumerate(response.is_anomaly):
-        print(f'Point {i}: {"Anomaly" if point else "Normal"}')
+    anomalies = [i for i, is_anomaly in enumerate(response.is_anomaly) if is_anomaly]
+    print(f'Found {len(anomalies)} anomalies at indices: {anomalies}')
+    for i in anomalies:
+        print(f'Point {i}: {series[i].value} at {series[i].timestamp}')
 except Exception as e:
     print('Error detecting anomalies:', e)
 
 sys.exit(0)
+    print("Model is {}".format(model_status))
+    time.sleep(30)
+if model_status == ModelStatus.READY:
+    print("Done.\n--------------------")
+    # Return the latest model id
 
+# Detect anomaly in the same data source (but a different interval)
+result = ad_client.detect_multivariate_batch_anomaly(model_id, batch_inference_body)
+result_id = result.result_id
+
+# Get results (may need a few seconds)
+anomaly_results = ad_client.get_multivariate_batch_detection_result(result_id)
+print("Get detection result...(it may take a few seconds)")
+
+while anomaly_results.summary.status != MultivariateBatchDetectionStatus.READY and anomaly_results.summary.status != MultivariateBatchDetectionStatus.FAILED:
+    anomaly_results = ad_client.get_multivariate_batch_detection_result(result_id)
+    print("Detection is {}".format(anomaly_results.summary.status))
+    time.sleep(5)
+    
+   
+print("Result ID:\t", anomaly_results.result_id)
+print("Result status:\t", anomaly_results.summary.status)
+print("Result length:\t", len(anomaly_results.results))
+
+# See detailed inference result
+for r in anomaly_results.results:
+    print(
+        "timestamp: {}, is_anomaly: {:<5}, anomaly score: {:.4f}, severity: {:.4f}, contributor count: {:<4d}".format(
+            r.timestamp,
+            r.value.is_anomaly,
+            r.value.score,
+            r.value.severity,
+            len(r.value.interpretation) if r.value.is_anomaly else 0,
+        )
+    )
+    if r.value.interpretation:
+        for contributor in r.value.interpretation:
+            print(
+                "\tcontributor variable: {:<10}, contributor score: {:.4f}".format(
+                    contributor.variable, contributor.contribution_score
+                )
+            )
