@@ -1,54 +1,67 @@
 
-<!-- templates/index.html -->
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Anomaly Dashboard (Local)</title>
+  <title>Anomaly Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <!-- Styles -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1"></script>
 </head>
 <body>
   <header class="app-header">
-    <h1>Retain • Anomaly Detection</h1>
-    <div class="actions">
+    <h1>Anomaly Detection (Mock)</h1>
+    <div class="controls">
+      <div class="control-group">
+        <label for="userSelect">User</label>
+        <select id="userSelect">
+          <option>User A</option>
+          <option>User B</option>
+          <option>User C</option>
+          <option>ALL</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label for="displaySelect">Display</label>
+        <select id="displaySelect">
+          <option value="series">Series only</option>
+          <option value="mean">Series + Rolling Mean</option>
+          <option value="band" selected>Series + Mean + Band</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label for="zInput">Z-threshold</label>
+        <input id="zInput" type="number" step="0.1" value="3.0" />
+      </div>
+      <div class="control-group">
+        <label for="winInput">Window</label>
+        <input id="winInput" type="number" min="5" value="30" />
+      </div>
       <button id="refreshBtn" class="btn">Refresh</button>
     </div>
   </header>
 
   <main class="container">
-    <!-- KPI row -->
     <section class="kpis">
-      <div class="kpi">
-        <div class="kpi-label">Total Points</div>
-        <div class="kpi-value" id="kpiTotal">—</div>
-      </div>
-      <div class="kpi">
-        <div class="kpi-label">Anomalies</div>
-        <div class="kpi-value kpi-warn" id="kpiAnoms">—</div>
-      </div>
-      <div class="kpi">
-        <div class="kpi-label">Threshold (Z)</div>
-        <div class="kpi-value" id="kpiThresh">3.0</div>
-      </div>
+      <div class="kpi"><div class="kpi-label">Points</div><div class="kpi-value" id="kpiTotal">—</div></div>
+      <div class="kpi"><div class="kpi-label">Anomalies</div><div class="kpi-value warn" id="kpiAnoms">—</div></div>
+      <div class="kpi"><div class="kpi-label">User</div><div class="kpi-value" id="kpiUser">—</div></div>
     </section>
 
-    <!-- Chart card -->
     <section class="card">
-      <h2>series_0 — Time Series with Anomalies</h2>
-      <canvas id="tsChart" height="120"></canvas>
+      <h2>Time Series with Anomalies</h2>
+      <div class="chart-wrap">
+        <canvas id="tsChart"></canvas>
+      </div>
     </section>
 
-    <!-- Table card -->
     <section class="card">
       <h2>Detected Anomalies</h2>
       <table class="table" id="anomTable">
         <thead>
           <tr>
             <th>#</th>
+            <th>User</th>
             <th>Timestamp</th>
             <th>Value</th>
           </tr>
@@ -59,10 +72,9 @@
   </main>
 
   <footer class="app-footer">
-    <small>Local mock dashboard • No Azure required • Z-score detector</small>
+    <small>Manual refresh • White chart background • Unique colors per user</small>
   </footer>
 
-  <!-- App JS -->
-  {{ url_for(</script>
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
 </body>
 </html>
